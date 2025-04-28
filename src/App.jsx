@@ -7,28 +7,29 @@ function App() {
   const [stocks, setStocks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [query, setQuery] = useState("AAPL");
+  const [query, setQuery] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [selectedSymbol, setSelectedSymbol] = useState("AAPL");
 
-  const fetchStocks = async () => {
+  const API_KEY = 'YOUR_REAL_API_KEY'; // <<-- REPLACE THIS!!
+
+  // Fetch stock price data
+  const fetchStocks = async (symbol) => {
     try {
       setLoading(true);
       setError(null);
       const response = await fetch(
-        `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${query}&interval=5min&apikey=YOUR_REAL_API_KEY`
+        `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&apikey=${API_KEY}`
       );
       const data = await response.json();
-      console.log(data); // good for debugging
-
       if (!data['Time Series (5min)']) {
         throw new Error("API error or limit reached.");
       }
-
       const times = Object.keys(data['Time Series (5min)']);
       const latestTime = times[0];
       const latestPrice = data['Time Series (5min)'][latestTime]['1. open'];
-
       setStocks([
-        { symbol: query, price: parseFloat(latestPrice) }
+        { symbol: symbol, price: parseFloat(latestPrice) }
       ]);
     } catch (err) {
       setError(err.message);
@@ -37,54 +38,88 @@ function App() {
       setLoading(false);
     }
   };
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      fetchStocks();
+
+  // Fetch suggestions while typing
+  const fetchSuggestions = async (keyword) => {
+    if (!keyword) {
+      setSuggestions([]);
+      return;
+    }
+    const response = await fetch(
+      `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${keyword}&apikey=${VDP2D2K6W3MHHW8T}`
+    );
+    const data = await response.json();
+    if (data.bestMatches) {
+      const results = data.bestMatches.map(match => ({
+        symbol: match["1. symbol"],
+        name: match["2. name"]
+      }));
+      setSuggestions(results.slice(0, 5)); // Only show top 5
     }
   };
-  const handleChange = (event) => {
-    setQuery(event.target.value);
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setQuery(value);
+    fetchSuggestions(value);
   };
-  const handleClick = () => {
-    fetchStocks();
-  }
-  const handleFocus = () => {
-    setQuery("");
-  }
-  const handleBlur = () => {
-    if (query === "") {
-      setQuery("AAPL");
+
+  const handleSuggestionClick = (symbol) => {
+    setSelectedSymbol(symbol);
+    setQuery(symbol);
+    setSuggestions([]);
+    fetchStocks(symbol);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && query) {
+      fetchStocks(query);
+      setSuggestions([]);
     }
-  }
-  const handleMouseEnter = () => {
-    setQuery("AAPL");
-  }
+  };
+
   useEffect(() => {
-    fetchStocks();
+    fetchStocks(selectedSymbol);
   }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white flex flex-col items-center py-10 font-sans">
       <h1 className="text-4xl font-bold text-gray-800 mb-2">📈 Stock Dashboard</h1>
-      <p className="text-gray-500 mb-10">Live stock prices updated every 5 minutes</p>
+      <p className="text-gray-500 mb-10">Live stock prices with real-time search suggestions</p>
 
       <div className="w-full max-w-4xl flex flex-col gap-8">
 
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <div className="flex gap-4 mb-6">
+        <div className="bg-white rounded-2xl shadow-md p-6 relative">
+          <div className="flex gap-4 mb-4 relative">
             <input
               type="text"
               className="border rounded-lg p-3 flex-1 bg-gray-50"
-              placeholder="Enter a stock symbol (e.g., AAPL)"
+              placeholder="Type a company name or symbol (e.g., Apple, AAPL)"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
             />
             <button
               className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg"
-              onClick={fetchStocks}
+              onClick={() => fetchStocks(query)}
             >
               Search
             </button>
+
+            {/* Suggestions Dropdown */}
+            {suggestions.length > 0 && (
+              <div className="absolute top-full mt-2 w-full bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto z-10">
+                {suggestions.map((suggestion, index) => (
+                  <div
+                    key={index}
+                    onClick={() => handleSuggestionClick(suggestion.symbol)}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  >
+                    <span className="font-semibold">{suggestion.symbol}</span> - {suggestion.name}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {loading ? (
@@ -130,36 +165,23 @@ function App() {
               options={{
                 responsive: true,
                 plugins: {
-                  legend: {
-                    display: false
-                  },
-                  title: {
-                    display: false
-                  }
+                  legend: { display: false },
+                  title: { display: false }
                 },
                 scales: {
                   y: {
-                    ticks: {
-                      color: '#64748b',
-                    },
-                    grid: {
-                      color: '#e2e8f0',
-                    },
+                    ticks: { color: '#64748b' },
+                    grid: { color: '#e2e8f0' },
                   },
                   x: {
-                    ticks: {
-                      color: '#64748b',
-                    },
-                    grid: {
-                      color: '#e2e8f0',
-                    },
+                    ticks: { color: '#64748b' },
+                    grid: { color: '#e2e8f0' },
                   }
                 }
               }}
             />
           </div>
         )}
-
       </div>
     </div>
   );
