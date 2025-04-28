@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { Line } from 'react-chartjs-2';
+import 'chart.js/auto'; // Import Chart.js auto to register all components
 
 function App() {
   const [stocks, setStocks] = useState([]);
@@ -11,7 +13,7 @@ function App() {
       setLoading(true);
       setError(null);
       const response = await fetch(
-        `https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=${query}&apikey=demo`
+        `https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=${query}&apikey=VDP2D2K6W3MHHW8T`
       );
       const data = await response.json();
       if (!data['Stock Quotes']) {
@@ -73,6 +75,26 @@ function App() {
                 ))}
               </tbody>
             </table>
+            {stocks.length > 0 && (
+              <div className="w-full max-w-2xl mt-8">
+                <Line
+                  data={{
+                    labels: stocks.map((stock) => stock['1. symbol']),
+                    datasets: [
+                      {
+                        label: 'Stock Prices ($)',
+                        data: stocks.map((stock) => parseFloat(stock['2. price'])),
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                        fill: true,
+                        tension: 0.4,
+                      },
+                    ],
+                  }}
+                />
+              </div>
+            )}
+
           </div>
         )}
       </div>
