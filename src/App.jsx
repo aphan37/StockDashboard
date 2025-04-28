@@ -11,7 +11,7 @@ function App() {
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSymbol, setSelectedSymbol] = useState("AAPL");
 
-  const API_KEY = 'VDP2D2K6W3MHHW8T';
+  const API_KEY = 'VDP2D2K6W3MHHW8T'; // <<-- Your real API key
 
   // Fetch stock price data
   const fetchStocks = async (symbol) => {
@@ -37,7 +37,7 @@ function App() {
     } finally {
       setLoading(false);
     }
-  },
+  };
 
   // Fetch suggestions while typing
   const fetchSuggestions = async (keyword) => {
@@ -55,18 +55,6 @@ function App() {
         name: match["2. name"]
       }));
       setSuggestions(results.slice(0, 5)); // Only show top 5
-    }
-  };
-  // Fetch initial stocks on load
-  useEffect(() => {
-    fetchStocks(selectedSymbol);
-  }, [selectedSymbol]);
-  // Fetch suggestions on input change
-  useEffect(() => {
-    if (query) {
-      fetchSuggestions(query);
-    } else {
-      setSuggestions([]);
     }
   };
 
@@ -90,9 +78,10 @@ function App() {
     }
   };
 
+  // Fetch stock when selectedSymbol changes
   useEffect(() => {
     fetchStocks(selectedSymbol);
-  }, []);
+  }, [selectedSymbol]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-100 to-white flex flex-col items-center py-10 font-sans">
