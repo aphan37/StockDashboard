@@ -1,7 +1,7 @@
 # 📈 Stock Price Dashboard
 
 A **responsive stock price dashboard** built with **React**, **Tailwind CSS**, and **Alpha Vantage API**.  
-Easily search stocks, view real-time prices, and see live data on an animated chart
+Easily search stocks, view real-time prices, and see live data on an animated chart.
 
 ---
 
