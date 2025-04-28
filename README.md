@@ -1,16 +1,69 @@
-<<<<<<< HEAD
-# React + Vite
+# 📈 Stock Price Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A **responsive stock price dashboard** built with **React**, **Tailwind CSS**, and **Alpha Vantage API**.  
+Easily search stocks, view real-time prices, and see live data on an animated chart
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- **Search stocks** by company name or symbol with live suggestions
+- **Display** real-time stock data (Symbol, Price) in a clean table
+- **Animated Line Chart** using Chart.js
+- **Loading spinner** while fetching data
+- **Error handling** for failed API calls
+- **Fully responsive** and mobile-friendly
+- **Deployed on Vercel**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
-# StockDashboard
->>>>>>> 89e6cccba15b1f7a35b17d7bb62afb032bc9aee2
+---
+
+## 🛠️ Tech Stack
+
+- **React** (Vite)
+- **Tailwind CSS** (for UI styling)
+- **Chart.js** (for animated stock chart)
+- **Alpha Vantage API** (for real-time stock data)
+- **Vercel** (deployment)
+
+---
+
+## Live Demo
+
+👉 [Visit the Live Site](https://stock-dashboard-one-beta.vercel.app/)
+
+---
+
+## How to Run Locally
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/aphan37/StockDashboard.git
+   cd StockDashboard
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Replace `API_KEY` in `src/App.jsx` with your own [Alpha Vantage API Key](https://www.alphavantage.co/support/#api-key).
+
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+5. Visit `http://localhost:5173/` to view it!
+
+---
+
+## 📜 License
+
+This project is for educational purposes only.  
+All stock data is provided by [Alpha Vantage](https://www.alphavantage.co/).
+
+---
+
+# 📣 Credits
+
+Made by [Anh Phan]
