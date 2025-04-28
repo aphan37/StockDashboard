@@ -23,10 +23,19 @@ function App() {
         `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${query}&interval=5min&apikey=VDP2D2K6W3MHHW8T&datatype=json`
       );
       const data = await response.json();
-      if (!data['Stock Quotes']) {
+      console.log(data); // <-- good for debugging
+
+      if (!data['Time Series (5min)']) {
         throw new Error("API error or limit reached.");
       }
-      setStocks(data['Stock Quotes']);
+
+      const times = Object.keys(data['Time Series (5min)']);
+      const latestTime = times[0]; // Get latest timestamp
+      const latestPrice = data['Time Series (5min)'][latestTime]['1. open']; // Get latest 'open' price
+
+      setStocks([
+        { symbol: query, price: parseFloat(latestPrice) }
+      ]);
     } catch (err) {
       setError(err.message);
       setStocks([]);
@@ -34,6 +43,7 @@ function App() {
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     fetchStocks();
