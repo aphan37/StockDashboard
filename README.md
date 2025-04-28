@@ -66,4 +66,4 @@ All stock data is provided by [Alpha Vantage](https://www.alphavantage.co/).
 
 # 📣 Credits
 
-Made by [Anh Phan]
+Made by Anh Phan
