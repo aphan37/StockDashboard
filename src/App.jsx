@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Line } from 'react-chartjs-2';
-import 'chart.js/auto'; // Import Chart.js auto to register all components
+import 'chart.js/auto';
+import './App.css';
+
+// This is a simple React application that fetches stock prices from the Alpha Vantage API
+// and displays them in a table and a line chart. The user can input stock symbols
+// (comma-separated) to fetch their prices. The application handles loading states and errors gracefully.
+// The Alpha Vantage API key is hardcoded for demonstration purposes.
 
 function App() {
   const [stocks, setStocks] = useState([]);
@@ -8,6 +14,7 @@ function App() {
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("AAPL,MSFT,GOOGL,AMZN");
 
+  // Function to fetch stock data from Alpha Vantage API
   const fetchStocks = async () => {
     try {
       setLoading(true);
@@ -59,41 +66,58 @@ function App() {
           <div className="text-red-500 text-center">{error}</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white rounded">
-              <thead>
-                <tr>
-                  <th className="px-6 py-3 border-b text-left">Symbol</th>
-                  <th className="px-6 py-3 border-b text-left">Price ($)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stocks.map((stock, idx) => (
-                  <tr key={idx} className="hover:bg-gray-100">
-                    <td className="px-6 py-4 border-b">{stock['1. symbol']}</td>
-                    <td className="px-6 py-4 border-b">{parseFloat(stock['2. price']).toFixed(2)}</td>
+            <h2 className="text-xl font-semibold mb-4">Stock Prices</h2>
+            <p className="text-gray-600 mb-4">
+              Showing prices for: <strong>{query}</strong>
+            </p>
+            <p className="text-gray-600 mb-4">
+              Data fetched from Alpha Vantage API. Please note that the API has a limit on the number of requests.
+            </p>
+            <p className="text-gray-600 mb-4">
+              The data shown is for demonstration purposes only and may not reflect real-time prices.
+              <table className="min-w-full bg-white rounded">
+                <thead>
+                  <tr>
+                    <th className="px-6 py-3 border-b text-left">Symbol</th>
+                    <th className="px-6 py-3 border-b text-left">Price ($)</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            {stocks.length > 0 && (
-              <div className="w-full max-w-2xl mt-8">
-                <Line
-                  data={{
-                    labels: stocks.map((stock) => stock['1. symbol']),
-                    datasets: [
-                      {
-                        label: 'Stock Prices ($)',
-                        data: stocks.map((stock) => parseFloat(stock['2. price'])),
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.5)',
-                        fill: true,
-                        tension: 0.4,
-                      },
-                    ],
-                  }}
-                />
-              </div>
-            )}
+                </thead>
+                <tbody>
+                  {stocks.map((stock, idx) => (
+                    <tr key={idx} className="hover:bg-gray-100">
+                      <td className="px-6 py-4 border-b">{stock['1. symbol']}</td>
+                      <td className="px-6 py-4 border-b">{parseFloat(stock['2. price']).toFixed(2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {stocks.length > 0 && (
+                <div className="w-full max-w-2xl mt-8">
+                  <Line
+                    data={{
+                      labels: stocks.map((stock) => stock['1. symbol']),
+                      datasets: [
+                        {
+                          label: 'Stock Prices ($)',
+                          data: stocks.map((stock) => parseFloat(stock['2. price'])),
+                          borderColor: '#3b82f6',
+                          backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                          fill: true,
+                          tension: 0.4,
+                          pointRadius: 5,
+                          pointHoverRadius: 7,
+                          pointBackgroundColor: '#fff',
+                          pointBorderColor: '#3b82f6',
+                          pointBorderWidth: 2,
+                          pointHoverBackgroundColor: '#3b82f6',
+                          pointHoverBorderColor: '#fff',
+                          pointHoverBorderWidth: 2,
+                        },
+                      ],
+                    }}
+                  />
+                </div>
+              )}
 
           </div>
         )}
