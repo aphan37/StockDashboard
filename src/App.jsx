@@ -14,9 +14,10 @@ function App() {
       setLoading(true);
       setError(null);
       const response = await fetch(
-        `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${query}&interval=5min&apikey=VDP2D2K6W3MHHW8T.json&datatype=json`
+        `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${query}&interval=5min&apikey=YOUR_REAL_API_KEY`
       );
       const data = await response.json();
+      console.log(data); // good for debugging
 
       if (!data['Time Series (5min)']) {
         throw new Error("API error or limit reached.");
@@ -36,7 +37,28 @@ function App() {
       setLoading(false);
     }
   };
-
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      fetchStocks();
+    }
+  };
+  const handleChange = (event) => {
+    setQuery(event.target.value);
+  };
+  const handleClick = () => {
+    fetchStocks();
+  }
+  const handleFocus = () => {
+    setQuery("");
+  }
+  const handleBlur = () => {
+    if (query === "") {
+      setQuery("AAPL");
+    }
+  }
+  const handleMouseEnter = () => {
+    setQuery("AAPL");
+  }
   useEffect(() => {
     fetchStocks();
   }, []);
