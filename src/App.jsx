@@ -11,7 +11,7 @@ function App() {
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSymbol, setSelectedSymbol] = useState("AAPL");
 
-  const API_KEY = 'YOUR_REAL_API_KEY'; // <<-- REPLACE THIS!!
+  const API_KEY = 'VDP2D2K6W3MHHW8T';
 
   // Fetch stock price data
   const fetchStocks = async (symbol) => {
@@ -37,7 +37,7 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
+  },
 
   // Fetch suggestions while typing
   const fetchSuggestions = async (keyword) => {
@@ -46,7 +46,7 @@ function App() {
       return;
     }
     const response = await fetch(
-      `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${keyword}&apikey=${VDP2D2K6W3MHHW8T}`
+      `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${keyword}&apikey=${API_KEY}`
     );
     const data = await response.json();
     if (data.bestMatches) {
@@ -55,6 +55,18 @@ function App() {
         name: match["2. name"]
       }));
       setSuggestions(results.slice(0, 5)); // Only show top 5
+    }
+  };
+  // Fetch initial stocks on load
+  useEffect(() => {
+    fetchStocks(selectedSymbol);
+  }, [selectedSymbol]);
+  // Fetch suggestions on input change
+  useEffect(() => {
+    if (query) {
+      fetchSuggestions(query);
+    } else {
+      setSuggestions([]);
     }
   };
 
